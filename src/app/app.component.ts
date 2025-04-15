@@ -1,4 +1,13 @@
-import { AfterViewInit, ChangeDetectorRef, Component, effect, ElementRef, model, viewChild, viewChildren } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  effect,
+  ElementRef,
+  model,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,14 +19,20 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatFormFieldModule, MatCardModule, MatInputModule,
-    ChildComponent,TempchildComponent,FormsModule,CommonModule
+  imports: [
+    RouterOutlet,
+    MatFormFieldModule,
+    MatCardModule,
+    MatInputModule,
+    ChildComponent,
+    TempchildComponent,
+    FormsModule,
+    CommonModule,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements AfterViewInit {
-
   //@ViewChild('name') nameElement!: ElementRef;
   // @ViewChild(ChildComponent) child!: ChildComponent;
   //@ViewChildren(ChildComponent) childs!: QueryList<ChildComponent>;
@@ -25,24 +40,24 @@ export class AppComponent implements AfterViewInit {
   // nameElement = viewChild.required<ElementRef>('name');
   // child = viewChild.required<ChildComponent>(ChildComponent);
   // childs = viewChildren(ChildComponent);
-  
+
   readonly nameElement = viewChild.required<ElementRef>('name');
   readonly child = viewChild.required(ChildComponent);
   readonly childs = viewChildren(ChildComponent);
 
   //username='Test'
-  username=model<string>('Test')
-  userobj=model<{firstname:string,lastname:string}>({
+  username = model<string>('Test');
+  userobj = model<{ firstname: string; lastname: string }>({
     firstname: '',
-    lastname: ''
-  })
+    lastname: '',
+  });
 
   constructor(private cref: ChangeDetectorRef) {
-     effect(()=>{
-      if(this.username().length>5){
-        alert('Crossed more than 5 characters')
+    effect(() => {
+      if (this.username().length > 5) {
+        alert('Crossed more than 5 characters');
       }
-     })
+    });
   }
 
   ngAfterViewInit(): void {
@@ -59,11 +74,11 @@ export class AppComponent implements AfterViewInit {
     this.nameElement().nativeElement.focus();
     const nameElement = this.nameElement();
     nameElement.nativeElement.value = '200';
-    nameElement.nativeElement.disabled = 'disabled'
+    nameElement.nativeElement.disabled = 'disabled';
 
     //this.child.title = 'Child'
     //this.child().title = 'Child'
-    this.child().title = 'Child'
+    this.child().title = 'Child';
 
     //console.log(this.childs.toArray())
     // this.childs.toArray().forEach((item, i) => {
@@ -75,10 +90,8 @@ export class AppComponent implements AfterViewInit {
     // })
 
     this.childs().forEach((item, i) => {
-      item.title = 'Child ' + i
-    })
+      item.title = 'Child ' + i;
+    });
     this.cref.detectChanges();
   }
-
-
 }

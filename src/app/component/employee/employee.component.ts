@@ -14,26 +14,33 @@ import { getEmpList } from '../../Store/Employee.Selector';
 
 @Component({
   selector: 'app-employee',
-  imports: [MatCardModule, MatButtonModule, MatDialogModule,
-    MatTableModule, CommonModule
+  imports: [
+    MatCardModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatTableModule,
+    CommonModule,
   ],
   templateUrl: './employee.component.html',
-  styleUrl: './employee.component.css'
+  styleUrl: './employee.component.css',
 })
 export class EmployeeComponent implements OnInit, OnDestroy {
-
   empList: Employee[] = [];
   dataSource!: MatTableDataSource<Employee>;
-  displayedColumns: string[] = ['id', 'name', 'role', 'doj', 'salary', 'action']
+  displayedColumns: string[] = [
+    'id',
+    'name',
+    'role',
+    'doj',
+    'salary',
+    'action',
+  ];
   subscription = new Subscription();
 
   // constructor(private dialog: MatDialog, private service: EmployeeService) {
 
   // }
-  constructor(private dialog: MatDialog, private store: Store
-  ) {
-
-  }
+  constructor(private dialog: MatDialog, private store: Store) {}
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
@@ -47,11 +54,11 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     //   this.dataSource = new MatTableDataSource(this.empList);
     // })
     // this.subscription.add(sub);
-    this.store.dispatch(loadEmployee())
-    this.store.select(getEmpList).subscribe(item => {
-      this.empList = item;
+    this.store.dispatch(loadEmployee());
+    this.store.select(getEmpList).subscribe((item) => {
+      this.empList = item.filter((emp) => emp.id !== 0);
       this.dataSource = new MatTableDataSource(this.empList);
-    })
+    });
   }
 
   addemployee() {
@@ -59,11 +66,11 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
 
   DeleteEmployee(empId: number) {
+    if (empId === 0) {
+      console.error('Attempted to delete an invalid employee (id: 0).');
+      return;
+    }
     if (confirm('Are you sure?')) {
-      // let sub = this.service.Delete(empId).subscribe(item => {
-      //   this.GetallEmployee();
-      // })
-      // this.subscription.add(sub)
       this.store.dispatch(deleteEmployee({ empId: empId }));
     }
   }
@@ -73,16 +80,18 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
 
   openpopup(empid: number) {
-    this.dialog.open(AddEmployeeComponent, {
-      width: '50%',
-      exitAnimationDuration: '1000ms',
-      enterAnimationDuration: '1000ms',
-      data: {
-        'code': empid
-      }
-    }).afterClosed().subscribe(o => {
-      this.GetallEmployee();
-    });
+    this.dialog
+      .open(AddEmployeeComponent, {
+        width: '50%',
+        exitAnimationDuration: '1000ms',
+        enterAnimationDuration: '1000ms',
+        data: {
+          code: empid,
+        },
+      })
+      .afterClosed()
+      .subscribe((o) => {
+        this.GetallEmployee();
+      });
   }
-
 }
